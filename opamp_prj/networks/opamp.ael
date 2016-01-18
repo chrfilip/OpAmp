@@ -1,0 +1,15 @@
+set_simulator_type(1);
+create_text_form("StdForm","Standard","StdForm",0,"%v","%v",NULL,NULL,NULL,NULL);
+create_form_set("StdFormSet","StdForm");
+
+create_item("opamp","opamp","X",0,-1,NULL,standard_dialog,"",ComponentNetlistFmt,"opamp",ComponentAnnotFmt,"opamp",3,NULL,0,
+create_parm("gain","Gain",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", DB_GAIN_UNIT, prm("StdForm","100")),
+create_parm("cutoff_freq","Gain",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", FREQUENCY_UNIT, prm("StdForm","1.0 MHz")),
+create_parm("rin","Resistance",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", RESISTANCE_UNIT, prm("StdForm","1.0 MOhm")),
+create_parm("rout","Resistance",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", RESISTANCE_UNIT, prm("StdForm","100 Ohm")),
+create_parm("cin","Capacitance",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", CAPACITANCE_UNIT, prm("StdForm","1 nF")),
+create_parm("vcc","Voltage",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", VOLTAGE_UNIT, prm("StdForm","6.0 V")),
+create_parm("vee","Voltage",PARM_OPTIMIZABLE | PARM_STATISTICAL, "StdFileFormSet", VOLTAGE_UNIT, prm("StdForm","-6.0 V")));
+
+set_design_type(1);
+library_group("*", "*", 1, "opamp");

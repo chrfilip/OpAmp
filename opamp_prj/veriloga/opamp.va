@@ -1,0 +1,48 @@
+`include "constants.vams"
+`include "disciplines.vams"
+
+module opamp(vinp,vinn,voutg);
+
+ inout vinp,vinn;
+ inout voutg;
+ 
+ electrical vinp,vinn,voutg;
+ real vin, vout, vout0, iout, slewrate;
+ 
+ parameter real gain = 100 from (0:inf),          // open loop gain in dB
+                cutoff_freq  = 1M from (0:inf),   // cut-off frequency
+				cin  = 1n from [0:inf),           // input capacitance
+                rin  = 1M from (0:inf),           // input resistance
+                rout = 100 from (0:inf),          // output resistance
+				vcc = 6,          	  			  // positive source
+				vee = -6,          	  			  // negative source
+				iout_max = 20m from [0:inf);	  // max output current
+
+ analog begin
+   vin  = V(vinp,vinn);
+   vout = V(voutg);
+   
+   I(vinp,vinn) <+ (vin / rin) + cin*ddt(vin);	// input stage
+   
+   case (1)		//limit voltage output
+     vout >  vcc : vout =  vcc;
+     vout < vee : vout = vee;
+   endcase
+   
+   vout0 = laplace_nd(vin*gain,{1},{1,1/(2*`M_PI*cutoff_freq)});	// dominant pole
+
+   iout = (vout0 - vout) / rout;	// output current
+   
+   
+   case (1)		//limit current output
+     iout >  iout_max : iout =  iout_max;
+     iout < -iout_max : iout = -iout_max;
+   endcase
+	   
+	slewrate = 2*`M_PI*cutoff_freq*V(vinp);
+	//slewrate = 0;
+	I(voutg) <+ iout;
+    I(voutg) <+ slew(iout, slewrate);
+
+ end
+endmodule
